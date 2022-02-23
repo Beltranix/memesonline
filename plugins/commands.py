@@ -5,16 +5,17 @@ logger = logging.getLogger(__name__)
 
 import pyrogram
 from config import Config 
-from pyrogram import Client, Filters, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from translation import Translation
 from Tools.Download import download
-
+import database.database as sql
 
 
 my_father = "https://t.me/{}".format(Config.USER_NAME[1:])
 support = "https://telegram.dog/Ns_Bot_supporters"
 
-@Client.on_message(Filters.command(["start"]))
+@Client.on_message(filters.command(["start"]))
 async def start(c, m):
 
     await c.send_message(chat_id=m.chat.id,
@@ -25,7 +26,7 @@ async def start(c, m):
 
 
 
-@Client.on_message(Filters.command(["help"]))
+@Client.on_message(filters.command(["help"]))
 async def help(c, m):
 
     await c.send_message(chat_id=m.chat.id,
@@ -34,7 +35,7 @@ async def help(c, m):
                          parse_mode="markdown")
 
 
-@Client.on_message(Filters.command(["about"]))
+@Client.on_message(filters.command(["about"]))
 async def about(c, m):
 
     await c.send_message(chat_id=m.chat.id,
@@ -43,7 +44,8 @@ async def about(c, m):
                          reply_to_message_id=m.message_id,
                          parse_mode="markdown")
 
-@Client.on_message(Filters.command(["converttovideo"]))
+@Client.on_message(filters.video)
+@Client.on_message(filters.command(["converttovideo"]))
 async def video(c, m):
 
   if Config.BOT_PWD:
@@ -56,12 +58,12 @@ async def video(c, m):
       await c.send_message(chat_id=m.chat.id, text=Translation.BANNED_TEXT)
       return
   if m.from_user.id not in Config.BANNED_USER:
-      if m.reply_to_message is not None:
+      if m.reply_to_message is not None  or m.video is not None:
           await download(c, m)
       else:
           await c.send_message(chat_id=m.chat.id, text=Translation.REPLY_TEXT)
 
-@Client.on_message(Filters.command(["converttofile"]))
+@Client.on_message(filters.command(["converttofile"]))
 async def file(c, m):
 
   if Config.BOT_PWD:
@@ -78,7 +80,21 @@ async def file(c, m):
     else:
        await c.send_message(chat_id=m.chat.id, text=Translation.REPLY_TEXT)
 
-@Client.on_message(Filters.command(["login"]))
+@Client.on_message(filters.command(["togglethumbon"]))
+async def toggle_thumboff(c, m):
+    id = m.from_user.id
+    await sql.add(m.from_user.id, 0)
+    await c.send_message(chat_id=m.chat.id, text="Custom Thumbnail Off")
+
+
+@Client.on_message(filters.command(["togglethumbon"]))
+async def toggle_thumbon(c, m):
+    id = m.from_user.id
+    await sql.add(m.from_user.id, 1)
+    await c.send_message(chat_id=m.chat.id, text="Custom Thumbnail On")
+
+
+@Client.on_message(filters.command(["login"]))
 async def login(c, m):
     if Config.BOT_PWD:
         if (len(m.command) >= 2) & (m.from_user.id not in Config.LOGGED_USER) & (m.from_user.id not in Config.AUTH_USERS):

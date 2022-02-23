@@ -14,9 +14,9 @@ from translation import Translation
 import database.database as sql
 import pyrogram
 logging.getLogger("pyrogram").setLevel(logging.WARNING)
-from pyrogram import Client, Filters 
+from pyrogram import Client, filters 
 
-@Client.on_message(Filters.photo)
+@Client.on_message(filters.photo)
 async def save_photo(bot, update):
     if update.from_user.id in Config.BANNED_USER:
         await bot.delete_messages(
@@ -51,7 +51,7 @@ async def save_photo(bot, update):
         )
 
 
-@Client.on_message(Filters.command(["deletethumbnail"]))
+@Client.on_message(filters.command(["deletethumbnail"]))
 async def delete_thumbnail(bot, update):
     if update.from_user.id in Config.BANNED_USER:
         await bot.delete_messages(
@@ -72,3 +72,12 @@ async def delete_thumbnail(bot, update):
         text=Translation.DEL_ETED_CUSTOM_THUMB_NAIL,
         reply_to_message_id=update.message_id
     )
+
+@Client.on_message(filters.command(["showthumbnail"]))
+async def show_thumbnail(bot, update):
+    download_location = Config.DOWNLOAD_LOCATION + "/" + str(update.from_user.id)
+    try:
+        await bot.send_photo(chat_id=update.chat.id, photo=download_location + ".jpg")
+        # os.remove(download_location + ".json")
+    except:
+        pass

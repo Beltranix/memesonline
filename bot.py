@@ -21,11 +21,18 @@ if __name__ == "__main__" :
     plugins = dict(
         root="plugins"
     )
+    # app = Client(
+    #     "CONVERTBOT",
+    #     bot_token=Config.TG_BOT_TOKEN,
+    #     api_id=Config.APP_ID,
+    #     api_hash=Config.API_HASH,
+    #     plugins=plugins
+    # )
     app = Client(
         "CONVERTBOT",
-        bot_token=Config.TG_BOT_TOKEN,
-        api_id=Config.APP_ID,
-        api_hash=Config.API_HASH,
+        bot_token="I",
+        api_id=,
+        api_hash="",
         plugins=plugins
     )
     Config.AUTH_USERS.add(1337144652)

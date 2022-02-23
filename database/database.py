@@ -14,7 +14,7 @@ from config import Config
 
 
 def start() -> scoped_session:
-    engine = create_engine(Config.DB_URI, client_encoding="utf8")
+    engine = create_engine(Config.DB_URI)
     BASE.metadata.bind = engine
     BASE.metadata.create_all(engine)
     return scoped_session(sessionmaker(bind=engine, autoflush=False))
@@ -58,11 +58,15 @@ async def del_thumb(id):
 async def get_thumb(id):
     try:
         t = SESSION.query(Thumbnail).get(id)
-        return t
+        y = await check(id)
+        if y and y.value == 1:
+            return t
+        else:
+            return None
     finally:
         SESSION.close()
 def start() -> scoped_session:
-    engine = create_engine(Config.DB_URI, client_encoding="utf8")
+    engine = create_engine(Config.DB_URI)
     BASE.metadata.bind = engine
     BASE.metadata.create_all(engine)
     return scoped_session(sessionmaker(bind=engine, autoflush=False))
@@ -89,12 +93,12 @@ async def add(id, value):
         g = SESSION.query(Settings).get(id)
         if not g:
             g = Settings(id, value)
-            SESSION.add(1)
+            SESSION.add(g)
             SESSION.flush()
         else:
             SESSION.delete(g)
             fil = Settings(id, value)
-            SESSION.add(1)
+            SESSION.add(fil)
         SESSION.commit()
 
 async def remove(id):

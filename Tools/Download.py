@@ -28,16 +28,28 @@ async def download(c, m):
 
     download_location = Config.DOWNLOAD_LOCATION + "/"                                                               
     c_time = time.time()
-    media_location = await c.download_media(
-                          message=m.reply_to_message,
-                          file_name=download_location,
-                          progress=progress_for_pyrogram,
-                          progress_args=(
-                               "Download Status:",
-                               send,
-                               c_time
-                          )
-                     )
+    if m.reply_to_message is not None:
+        media_location = await c.download_media(
+                            message=m.reply_to_message,
+                            file_name=download_location,
+                            progress=progress_for_pyrogram,
+                            progress_args=(
+                                "Download Status:",
+                                send,
+                                c_time
+                            )
+                        )
+    else:
+        media_location = await c.download_media(
+                    message=m,
+                    file_name=download_location,
+                    progress=progress_for_pyrogram,
+                    progress_args=(
+                        "Download Status:",
+                        send,
+                        c_time
+                    )
+                )
     if not media_location is None:
         await send.edit(Translation.DOWNLOAD_COMPLETE)
         logger.info(f"{media_location} was downloaded successfully")
@@ -55,10 +67,11 @@ async def download(c, m):
                     mes = await c.get_messages(m.chat.id, mes.msg_id)
                     await mes.download(file_name=thumb_image_path)
                     thumb_image_path = thumb_image_path
+                    metadata.get('duration').seconds
                 except:
                     pass
             if mes == None:
-                if m.text == "/converttovideo":
+                if m.text == "/converttovideo" or m.video:
                     if metadata.has("duration"):
                         duration = metadata.get('duration').seconds
                         thumb_image_path = await take_screen_shot(

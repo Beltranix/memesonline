@@ -77,6 +77,45 @@ SESSION = start()
 
 INSERTION_LOCK = threading.RLock()
 
+class Users(BASE):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    
+    def __init__(self, id):
+        self.id = id
+    
+Users.__table__.create(checkfirst=True)
+
+async def add_user(id, value):
+    with INSERTION_LOCK:
+        g = SESSION.query(Users).get(id)
+        if not g:
+            g = Users(id)
+            SESSION.add(g)
+            SESSION.flush()
+        else:
+            SESSION.delete(g)
+            fil = Users(id)
+            SESSION.add(fil)
+        SESSION.commit()
+
+async def remove_user(id):
+    with INSERTION_LOCK:
+        g = SESSION.query(Users).get(id)
+        SESSION.delete(g)
+        SESSION.commit()
+
+async def check_user(id):
+    try:
+        y = SESSION.query(Users).get(id)
+        if y:
+            return True
+        else:
+            return False
+    finally:
+        SESSION.close()
+
+
 class Settings(BASE):
     __tablename__ = "settings"
     id = Column(Integer, primary_key=True)

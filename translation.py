@@ -5,9 +5,8 @@ class Translation(object):
 
       START = """Hello {0}
 
-I am a converter clone of [Convert Ns Bot](https://telegram.dog/convert_Ns_bot) by {1}
+I am a converter bot by {1}
 
-I can convert file to video or video to file with custom thumbnail support.
 """
 
 
@@ -97,6 +96,6 @@ ETA 🕰: {4}
       UPLOAD_START = "Trying to Upload 📤"
       UPLOAD_COMPLETE = "THANKS FOR USING ME"
       SAVED_CUSTOM_THUMB_NAIL = "✅ Saved Thumbnail Successfully. This will be deleted in 24hrs"
-      BANNED_TEXT = "YOU ARE BANNED. SO YOUR ARE NOT ABLE TO USE ME 🐒"
+      BANNED_TEXT = "SORRY, BUT YOU DON'T HAVE ACCESS TO ME :("
       REPLY_TEXT = "👩‍✈️ Reply to the media which you need to convert"
       DEL_ETED_CUSTOM_THUMB_NAIL = "Thumbnail Deleted Successfully ✅"

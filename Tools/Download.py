@@ -68,6 +68,7 @@ async def download(c, m):
                     await mes.download(file_name=thumb_image_path)
                     thumb_image_path = thumb_image_path
                     metadata.get('duration').seconds
+                    duration = metadata.get('duration').seconds
                 except:
                     pass
             if mes == None:

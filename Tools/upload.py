@@ -19,6 +19,7 @@ async def upload_video(c, m, send, media_location, thumb_image_path, duration, w
                 video=media_location,
                 duration=duration,
                 width=width,
+                caption=m.text,
                 height=height,
                 supports_streaming=True,
                 thumb=thumb_image_path,

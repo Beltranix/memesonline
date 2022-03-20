@@ -47,14 +47,14 @@ async def about(c, m):
 @Client.on_message(filters.video)
 @Client.on_message(filters.command(["converttovideo"]))
 async def video(c, m):
-
+  check = await sql.check_user(m.from_user.id)
   if Config.BOT_PWD:
       if (m.from_user.id not in Config.LOGGED_USER) & (m.from_user.id not in Config.AUTH_USERS):
           await m.reply_text(text=Translation.NOT_LOGGED_TEXT, quote=True)
           return
       else:
           pass
-  if  not sql.check_user(m.from_user.id):
+  if not check:
       await c.send_message(chat_id=m.chat.id, text=Translation.BANNED_TEXT)
       return
   if m.from_user.id not in Config.BANNED_USER:
@@ -81,7 +81,7 @@ async def file(c, m):
        await c.send_message(chat_id=m.chat.id, text=Translation.REPLY_TEXT)
 
 @Client.on_message(filters.command(["push"]))
-async def toggle_thumboff(c, m):
+async def push_tocb(c, m):
     id = m.from_user.id
     if id not in Config.ADMIN_LIST:
         return
@@ -90,11 +90,11 @@ async def toggle_thumboff(c, m):
 
 
 @Client.on_message(filters.command(["pull"]))
-async def toggle_thumbon(c, m):
+async def pull_fromdb(c, m):
     id = m.from_user.id
     if id not in Config.ADMIN_LIST:
         return
-    await sql.remove_user(m.text.split()[1], 1)
+    await sql.remove_user(m.text.split()[1])
     await c.send_message(chat_id=m.chat.id, text="User removed")
 
 @Client.on_message(filters.command(["togglethumbon"]))

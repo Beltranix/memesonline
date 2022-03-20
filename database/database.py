@@ -108,10 +108,10 @@ async def remove_user(id):
 async def check_user(id):
     try:
         y = SESSION.query(Users).get(id)
-        if y:
-            return True
-        else:
+        if not y:
             return False
+        else:
+            return True
     finally:
         SESSION.close()
 
